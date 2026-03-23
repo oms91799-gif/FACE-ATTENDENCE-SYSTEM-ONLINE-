@@ -1,8 +1,9 @@
-setuptools
-Flask
+cmake
+dlib
+face_recognition
+streamlit
+opencv-python-headless
 gspread
 google-auth
-face_recognition
-opencv-python-headless
+Pillow
 numpy
-gunicorn
