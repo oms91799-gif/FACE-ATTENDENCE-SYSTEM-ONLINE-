@@ -1,70 +1,127 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vectus AI Attendance</title>
+    <title>VECTUS AI - Face Auth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: sans-serif; background: #0b0f1a; color: white; text-align: center; }
-        .box { border: 2px solid #00d2ff; border-radius: 10px; margin: 10px; padding: 15px; background: #161b2a; }
-        video { width: 100%; max-width: 400px; border-radius: 10px; }
-        button { width: 100%; max-width: 400px; padding: 15px; margin: 10px 0; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
-        .btn-reg { background: #f1c40f; }
-        .btn-att { background: #00d2ff; }
+        :root { --primary: #00d2ff; --bg: #0b0f1a; --card: #161b2a; --accent: #38fbdb; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: white; margin: 0; padding: 15px; }
+        .container { max-width: 450px; margin: auto; }
+        .card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid #2d3343; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h2 { color: var(--primary); margin: 0 0 15px 0; font-size: 20px; text-transform: uppercase; }
+        
+        #video { width: 100%; border-radius: 15px; border: 3px solid var(--primary); background: #000; }
+        canvas { display: none; }
+        
+        input { background: #0b0f1a; border: 1px solid #2d3343; color: white; padding: 12px; border-radius: 10px; width: 90%; margin-bottom: 15px; font-size: 16px; text-align: center; }
+        
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; font-size: 14px; margin-bottom: 10px; transition: 0.3s; }
+        .btn-reg { background: #f1c40f; color: #000; }
+        .btn-att { background: var(--primary); color: #0b0f1a; }
+        
+        #status { padding: 15px; border-radius: 12px; font-weight: 600; display: none; margin-top: 10px; }
+        .success { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; }
+        .error { background: rgba(255, 71, 87, 0.2); color: #ff4757; border: 1px solid #ff4757; }
     </style>
 </head>
-<body onload="startCam()">
-    <h2>⚡ VECTUS AI SYSTEM</h2>
-    
-    <div class="box">
+<body onload="startCamera()">
+
+<div class="container">
+    <div class="card">
+        <h2>📷 LIVE SCANNER</h2>
         <video id="video" autoplay playsinline></video>
-        <canvas id="canvas" style="display:none;"></canvas>
+        <canvas id="canvas"></canvas>
+        <div id="status"></div>
     </div>
 
-    <div class="box">
-        <h3>NEW EMPLOYEE</h3>
-        <input type="number" id="punch_no" placeholder="Enter Punch No" style="padding:10px; width:80%;">
-        <button class="btn-reg" onclick="register()">REGISTER FACE</button>
+    <div class="card" style="border-color: #f1c40f;">
+        <h2 style="color:#f1c40f;">➕ ADD NEW EMPLOYEE</h2>
+        <input type="number" id="punch_no" placeholder="Enter Punching Number">
+        <button class="btn btn-reg" onclick="registerFace()">Register & Save Face</button>
     </div>
 
-    <div class="box">
-        <h3>DAILY ATTENDANCE</h3>
-        <button class="btn-att" onclick="markAttendance()">IN / OUT SCAN</button>
+    <div class="card">
+        <h2>✅ MARK ATTENDANCE</h2>
+        <button class="btn btn-att" onclick="markAttendance()">Face Scan (IN/OUT)</button>
     </div>
+</div>
 
-    <div id="status" style="margin:20px; font-weight:bold;"></div>
+<script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const statusBox = document.getElementById('status');
+    let userLat = "0", userLng = "0";
 
-    <script>
-        let lat, lng;
-        navigator.geolocation.getCurrentPosition(p => { lat = p.coords.latitude; lng = p.coords.longitude; });
+    // GPS Location Lena
+    navigator.geolocation.getCurrentPosition(p => {
+        userLat = p.coords.latitude;
+        userLng = p.coords.longitude;
+    }, err => console.log("Location Denied"));
 
-        async function startCam() {
+    // Camera Start Karna
+    async function startCamera() {
+        try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-            document.getElementById('video').srcObject = stream;
+            video.srcObject = stream;
+        } catch (err) {
+            showMessage("Camera Access Denied! ❌", "error");
         }
+    }
 
-        async function capture() {
-            const canvas = document.getElementById('canvas');
-            const video = document.getElementById('video');
-            canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            return canvas.toDataURL('image/jpeg');
-        }
+    // Photo Capture Karna
+    function captureImage() {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        return canvas.toDataURL('image/jpeg', 0.8);
+    }
 
-        async function register() {
-            const pno = document.getElementById('punch_no').value;
-            if(!pno) return alert("ID dalo!");
-            const img = await capture();
-            const res = await fetch('/register', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({image: img, punch_no: pno}) });
-            alert("Registered! ✅");
-        }
+    // Naya Employee Register Karna
+    async function registerFace() {
+        const pNo = document.getElementById('punch_no').value;
+        if(!pNo) return alert("Pehle Punching Number dalo!");
+        
+        showMessage("Saving Employee... ⏳", "success");
+        const img = captureImage();
+        
+        const res = await fetch('/register', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ image: img, punch_no: pNo })
+        });
+        const data = await res.json();
+        showMessage(data.msg, "success");
+        document.getElementById('punch_no').value = "";
+    }
 
-        async function markAttendance() {
-            const img = await capture();
-            document.getElementById('status').innerText = "Scanning... ⏳";
-            const res = await fetch('/scan', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({image: img, lat: lat, lng: lng}) });
-            const data = await res.json();
-            document.getElementById('status').innerText = data.status === 'Success' ? `✅ ${data.type} Marked: ID ${data.id}` : "❌ Error!";
+    // Attendance Lagana
+    async function markAttendance() {
+        showMessage("Scanning Face... ⏳", "success");
+        const img = captureImage();
+        
+        const res = await fetch('/scan', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ image: img, lat: userLat, lng: userLng })
+        });
+        const data = await res.json();
+        
+        if(data.status === 'Success') {
+            showMessage(`✅ PRESENT: ID ${data.id}`, "success");
+        } else {
+            showMessage(`❌ FAILED: ${data.msg}`, "error");
         }
-    </script>
+    }
+
+    function showMessage(msg, type) {
+        statusBox.style.display = "block";
+        statusBox.innerHTML = msg;
+        statusBox.className = type;
+        setTimeout(() => { statusBox.style.display = "none"; }, 5000);
+    }
+</script>
+
 </body>
 </html>
