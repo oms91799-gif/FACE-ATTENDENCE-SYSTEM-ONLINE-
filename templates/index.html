@@ -1,55 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VECTUS AI AUTH</title>
+    <title>Vectus AI Attendance</title>
     <style>
-        body { font-family: sans-serif; background: #0b0f1a; color: white; text-align: center; padding: 20px; }
-        #video { width: 100%; max-width: 400px; border: 4px solid #00d2ff; border-radius: 15px; }
-        button { background: #00d2ff; color: #0b0f1a; padding: 15px 30px; border: none; border-radius: 10px; font-weight: bold; font-size: 18px; margin-top: 20px; width: 100%; max-width: 400px; cursor: pointer; }
-        #res { margin-top: 20px; padding: 15px; border-radius: 10px; font-weight: bold; display: none; }
+        body { font-family: sans-serif; background: #0b0f1a; color: white; text-align: center; }
+        .box { border: 2px solid #00d2ff; border-radius: 10px; margin: 10px; padding: 15px; background: #161b2a; }
+        video { width: 100%; max-width: 400px; border-radius: 10px; }
+        button { width: 100%; max-width: 400px; padding: 15px; margin: 10px 0; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .btn-reg { background: #f1c40f; }
+        .btn-att { background: #00d2ff; }
     </style>
 </head>
 <body onload="startCam()">
-    <h2>⚡ VECTUS FACE AUTH</h2>
-    <video id="video" autoplay playsinline></video>
-    <canvas id="canvas" style="display:none;"></canvas>
-    <button onclick="capture()">FACE SCAN (ATTENDANCE)</button>
-    <div id="res"></div>
+    <h2>⚡ VECTUS AI SYSTEM</h2>
+    
+    <div class="box">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas" style="display:none;"></canvas>
+    </div>
+
+    <div class="box">
+        <h3>NEW EMPLOYEE</h3>
+        <input type="number" id="punch_no" placeholder="Enter Punch No" style="padding:10px; width:80%;">
+        <button class="btn-reg" onclick="register()">REGISTER FACE</button>
+    </div>
+
+    <div class="box">
+        <h3>DAILY ATTENDANCE</h3>
+        <button class="btn-att" onclick="markAttendance()">IN / OUT SCAN</button>
+    </div>
+
+    <div id="status" style="margin:20px; font-weight:bold;"></div>
 
     <script>
-        const video = document.getElementById('video');
+        let lat, lng;
+        navigator.geolocation.getCurrentPosition(p => { lat = p.coords.latitude; lng = p.coords.longitude; });
+
         async function startCam() {
             const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-            video.srcObject = stream;
+            document.getElementById('video').srcObject = stream;
         }
 
         async function capture() {
             const canvas = document.getElementById('canvas');
-            const resBox = document.getElementById('res');
-            resBox.style.display = "block";
-            resBox.innerHTML = "Processing... ⏳";
-            resBox.style.background = "#34495e";
-
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
+            const video = document.getElementById('video');
+            canvas.width = video.videoWidth; canvas.height = video.videoHeight;
             canvas.getContext('2d').drawImage(video, 0, 0);
-            const imgData = canvas.toDataURL('image/jpeg');
+            return canvas.toDataURL('image/jpeg');
+        }
 
-            const resp = await fetch('/scan', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({image: imgData})
-            });
-            const result = await resp.json();
-            
-            if(result.status === 'Success') {
-                resBox.innerHTML = "✅ ATTENDANCE MARKED: ID " + result.id;
-                resBox.style.background = "#10b981";
-            } else {
-                resBox.innerHTML = "❌ ERROR: " + result.msg;
-                resBox.style.background = "#ff4757";
-            }
+        async function register() {
+            const pno = document.getElementById('punch_no').value;
+            if(!pno) return alert("ID dalo!");
+            const img = await capture();
+            const res = await fetch('/register', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({image: img, punch_no: pno}) });
+            alert("Registered! ✅");
+        }
+
+        async function markAttendance() {
+            const img = await capture();
+            document.getElementById('status').innerText = "Scanning... ⏳";
+            const res = await fetch('/scan', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({image: img, lat: lat, lng: lng}) });
+            const data = await res.json();
+            document.getElementById('status').innerText = data.status === 'Success' ? `✅ ${data.type} Marked: ID ${data.id}` : "❌ Error!";
         }
     </script>
 </body>
