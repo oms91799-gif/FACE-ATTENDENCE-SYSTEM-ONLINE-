@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VECTUS AI AUTH</title>
+    <style>
+        body { font-family: sans-serif; background: #0b0f1a; color: white; text-align: center; padding: 20px; }
+        #video { width: 100%; max-width: 400px; border: 4px solid #00d2ff; border-radius: 15px; }
+        button { background: #00d2ff; color: #0b0f1a; padding: 15px 30px; border: none; border-radius: 10px; font-weight: bold; font-size: 18px; margin-top: 20px; width: 100%; max-width: 400px; cursor: pointer; }
+        #res { margin-top: 20px; padding: 15px; border-radius: 10px; font-weight: bold; display: none; }
+    </style>
+</head>
+<body onload="startCam()">
+    <h2>⚡ VECTUS FACE AUTH</h2>
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <button onclick="capture()">FACE SCAN (ATTENDANCE)</button>
+    <div id="res"></div>
+
+    <script>
+        const video = document.getElementById('video');
+        async function startCam() {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+            video.srcObject = stream;
+        }
+
+        async function capture() {
+            const canvas = document.getElementById('canvas');
+            const resBox = document.getElementById('res');
+            resBox.style.display = "block";
+            resBox.innerHTML = "Processing... ⏳";
+            resBox.style.background = "#34495e";
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            const imgData = canvas.toDataURL('image/jpeg');
+
+            const resp = await fetch('/scan', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({image: imgData})
+            });
+            const result = await resp.json();
+            
+            if(result.status === 'Success') {
+                resBox.innerHTML = "✅ ATTENDANCE MARKED: ID " + result.id;
+                resBox.style.background = "#10b981";
+            } else {
+                resBox.innerHTML = "❌ ERROR: " + result.msg;
+                resBox.style.background = "#ff4757";
+            }
+        }
+    </script>
+</body>
+</html>
