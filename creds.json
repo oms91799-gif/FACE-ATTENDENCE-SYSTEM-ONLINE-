@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "cohesive-mark-491110-v5",
+  "private_key_id": "73a862b6585af50b5ac461bd7589860a7b4f78b9",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDNmEqtkhHsc8m+\nYsjPUM9S3FR7inZqHPpeDnlsFK8dlS4RLf5t6o6MtgWQyKWnYgVj/5zj/PzJptz+\n2TF+CfRMwLWoJkOEDzEGSEsnYbQrqLN8XMK+RSuxcsljrdXxknIi8fE8kv6JO7GV\nolBjDo8DVJsAZWV56RA8u/USyBu80iCSftq08xYvAEQMh66NUxR11pqDrISELCvV\nTMB9SBL7dgqGhVTZJS3HDiZlA+t3rfE+rWgmhOe2xatHHCCbdUAHnKoc5+XWxk4J\nWo360pIeaCWoQLq/8VckqooA/WqjkI2po3nZQG11WnMpuW9gqNKrE5jupmC5t2WY\n7Cyw2+FtAgMBAAECggEACW9NMgTrhKXVosKGw5jKQtuwltDGWV1GEg3o/ZA/bwSb\nDhfFvsaOTx/FRp0mmPVTGQEwcnf4I8rgBmPyNP4A84q+a16CJ6vIzKiBpmeB7KT7\nw5/AIhorhKOnYUcnc8QML9VZhDWcr7CJGDxQIxOWdYkq6cw9aWhMIfVgLEH5n+MR\nhv3W8uiwdfvQvsTQ10J1WBhNESE6hKY++SkWblLp/0RvkuItAlad7ImnridpVY5d\npC/fZwbgZI2q59PpTbZSYLEt0G/sf6YPapdHjESTgLR1/2hknQa1bzhjPjFYglpk\nsPnK217RIa/bDWqcBkSX9h5yM5+tn4gV+76u8I7CEwKBgQD+kTU0Sg9I9SKmxjVa\nBzJpoxpmIq+awdxC96qBQP489/n5RUqdVz+pi+a07dd2l32hb8i2h/fBGhyPFr0E\n5NtPVn89AveVhqev2eUCutnPNqUEZ1gK3wYwBFm3CfBAypkE1g3937/emQSFFnb5\nThKejZ4TnXwKh3rzz2o4felDUwKBgQDOwIW1Ki+9ga8TlcbEBoGnPluUOv/Ah00X\nGBs88d0cGE1kbtUtWwc+lt1eq466rWW1RHGPiYC65dvuOWjtsfObZl/R1OK+EdlT\nAtbeEXFapru1CLI1RPNJAp+w/r9NtXrfJl1yV5aPwQ489XQiUw40OYOfnQSbd2va\n98yL3QBwPwKBgA+GkaUfwzDi6nsbaZOVDskMjoaeJPGeUy2uZzK84QSc5x0B0dwo\nvxQ7GRX9z39HG/1lkOs4/a5ERmufqmWLA6kiEF6LOMhgzwdVlbcF6FTP816CYwc+\ntOTmzwXv0DxTXuPBnlbWd6A+2ty3Ewh/b3lGD9cIatFFlAUcqFDLtRdLAoGBALF/\nh0rpVOMVGwFtbJ+OFnFGj8jKfhcEEaLqBzhjTLh6BLdcj5fItod9bb+A+aA6jT75\n66SXH/VUsWPr1bF7PPEFCu5SHfefyzwBDAbKYs64ph3dwWEKOPNNVVvW2NYWH87E\nWSV5HMF9tIORFosBUwhy+BVn8DSoaegrJWhN67pxAoGAJBsMvG+vsLpWFyr6aujq\nCiCYBs/oRWKz8KKpQHqFpzHFepKXV9JWFVfDH/fkSku3VYtP3XTpn7ib8PdihLAt\nMfm0ZHUC7XvkqmSTw1uX6717WkUEBVHzJnWN5Qeid5jB+foQFIF5HGItsDWzXkW/\n7MSnot0dR6vDGxQoqp0bK2A=\n-----END PRIVATE KEY-----\n",
+  "client_email": "vectus-auth-bot@cohesive-mark-491110-v5.iam.gserviceaccount.com",
+  "client_id": "101310824629349076149",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/vectus-auth-bot%40cohesive-mark-491110-v5.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
