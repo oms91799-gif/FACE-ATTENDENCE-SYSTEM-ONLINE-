@@ -1,9 +1,5 @@
-cmake
-dlib
-face_recognition
 streamlit
+mediapipe
 opencv-python-headless
 gspread
 google-auth
-Pillow
-numpy
